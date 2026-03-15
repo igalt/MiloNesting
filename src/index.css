@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    direction: rtl;
+    font-family: 'Noto Sans Hebrew', system-ui, sans-serif;
+  }
+
+  body {
+    background-color: #FFF8F0;
+    color: #3D3D3D;
+    min-height: 100vh;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #FFD6E0;
+    border-radius: 3px;
+  }
+}
+
+@layer components {
+  .got-it-row {
+    @apply opacity-50;
+  }
+
+  .got-it-row .item-name {
+    @apply line-through text-milo-stone;
+  }
+
+  .priority-badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap;
+  }
+
+  .acquisition-btn {
+    @apply px-2 py-1 rounded-lg text-xs font-medium border transition-all duration-150;
+  }
+
+  .acquisition-btn.active {
+    @apply shadow-sm;
+  }
+
+  .category-chip {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .filter-chip {
+    @apply px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 cursor-pointer select-none;
+  }
+
+  .filter-chip.active {
+    @apply shadow-sm;
+  }
+}
