@@ -125,14 +125,27 @@ export default function App() {
           onDelete={deleteItem}
           onReorder={handleReorder}
         />
+
+        {/* Inline add button at bottom of list */}
+        <div className="mt-4 mb-24 flex justify-center">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 px-6 py-3 rounded-2xl border-2 border-dashed border-milo-coral/50 text-milo-coral hover:bg-milo-coral/5 hover:border-milo-coral transition-all text-sm font-medium"
+          >
+            <Plus className="w-4 h-4" />
+            הוסף פריט חדש
+          </button>
+        </div>
       </main>
 
+      {/* FAB — bottom right */}
       <button
         onClick={() => setShowAddModal(true)}
-        className="fixed bottom-6 left-6 w-14 h-14 rounded-full bg-milo-coral text-white shadow-lg hover:bg-milo-coral-dark active:scale-95 transition-all flex items-center justify-center z-40"
+        className="fixed bottom-6 right-6 flex items-center gap-2 px-4 h-14 rounded-full bg-milo-coral text-white shadow-lg hover:bg-milo-coral-dark active:scale-95 transition-all z-40"
         aria-label="הוסף פריט"
       >
-        <Plus className="w-7 h-7" />
+        <Plus className="w-5 h-5" />
+        <span className="text-sm font-semibold">הוסף פריט</span>
       </button>
 
       {showAddModal && (

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { ChevronDown, ChevronUp, GripVertical } from 'lucide-react'
+import { ChevronDown, ChevronUp, GripVertical, Trash2 } from 'lucide-react'
 import { CategoryTag } from '../cells/CategoryTag'
 import { PriorityBadge } from '../cells/PriorityBadge'
 import { GotItCheckbox } from '../cells/GotItCheckbox'
@@ -29,11 +29,16 @@ export function ItemRow({ item, isDragDisabled, onUpdate, onDelete }: ItemRowPro
     transition,
   }
 
+  function handleDelete(e: React.MouseEvent) {
+    e.stopPropagation()
+    if (confirm(`למחוק את "${item.name_he}"?`)) onDelete(item.id)
+  }
+
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`rounded-2xl overflow-hidden border transition-all duration-200 ${
+      className={`group rounded-2xl overflow-hidden border transition-all duration-200 ${
         isDragging
           ? 'shadow-xl border-milo-lavender bg-milo-lavender/10 z-50'
           : item.got_it
@@ -92,6 +97,16 @@ export function ItemRow({ item, isDragDisabled, onUpdate, onDelete }: ItemRowPro
         <div className="flex-shrink-0">
           <PriorityBadge priority={item.priority} />
         </div>
+
+        {/* Delete button — hover-reveal on desktop, always visible on mobile */}
+        <button
+          onClick={handleDelete}
+          className="flex-shrink-0 text-red-300 hover:text-red-500 transition-colors opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+          aria-label="מחק פריט"
+          title="מחק פריט"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
 
         {/* Expand toggle */}
         <button
