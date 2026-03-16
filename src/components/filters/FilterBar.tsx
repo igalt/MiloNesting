@@ -57,16 +57,29 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
   return (
     <div className="bg-white border-b border-milo-stone-light">
       <div className="max-w-6xl mx-auto px-4 py-3 space-y-3">
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute top-1/2 -translate-y-1/2 right-3 w-4 h-4 text-milo-stone pointer-events-none" />
-          <input
-            type="text"
-            placeholder="חיפוש פריט..."
-            value={filters.searchText}
-            onChange={(e) => onChange({ ...filters, searchText: e.target.value })}
-            className="w-full pr-9 pl-3 py-2 rounded-xl border border-milo-stone-light bg-milo-cream text-sm focus:outline-none focus:ring-2 focus:ring-milo-lavender text-right"
-          />
+        {/* Search + Hide Complete toggle */}
+        <div className="flex gap-2 items-center">
+          <div className="relative flex-1">
+            <Search className="absolute top-1/2 -translate-y-1/2 right-3 w-4 h-4 text-milo-stone pointer-events-none" />
+            <input
+              type="text"
+              placeholder="חיפוש פריט..."
+              value={filters.searchText}
+              onChange={(e) => onChange({ ...filters, searchText: e.target.value })}
+              className="w-full pr-9 pl-3 py-2 rounded-xl border border-milo-stone-light bg-milo-cream text-sm focus:outline-none focus:ring-2 focus:ring-milo-lavender text-right"
+            />
+          </div>
+          <button
+            onClick={() => onChange({ ...filters, gotIt: filters.gotIt === 'pending' ? 'all' : 'pending' })}
+            className={`shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl border text-sm font-medium transition-colors ${
+              filters.gotIt === 'pending'
+                ? 'bg-milo-coral border-milo-coral text-white'
+                : 'bg-white border-milo-stone-light text-milo-stone hover:border-milo-coral hover:text-milo-coral'
+            }`}
+          >
+            <span>{filters.gotIt === 'pending' ? '✓' : '👁'}</span>
+            <span className="hidden sm:inline">{filters.gotIt === 'pending' ? 'מציג חסרים' : 'הסתר שהושג'}</span>
+          </button>
         </div>
 
         {/* Category chips */}
