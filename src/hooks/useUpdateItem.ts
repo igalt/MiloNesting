@@ -34,22 +34,45 @@ export function useUpdateItem(
   )
 
   const deleteItem = useCallback(
-    async (id: string) => {
+    async (id: string): Promise<NestingItem | null> => {
+      const target = items.find((i) => i.id === id) ?? null
       const previous = [...items]
       setItems((prev) => prev.filter((item) => item.id !== id))
 
       if (USE_LOCAL) {
         localDelete(id)
-        return
+        return target
       }
 
       const { error } = await supabase.from('nesting_items').delete().eq('id', id)
       if (error) {
         setItems(previous)
         console.error('Delete failed:', error.message)
+        return null
       }
+      return target
     },
     [items, setItems]
+  )
+
+  const restoreItem = useCallback(
+    async (item: NestingItem) => {
+      setItems((prev) =>
+        [...prev, item].sort((a, b) => a.sort_order - b.sort_order)
+      )
+
+      if (USE_LOCAL) {
+        localInsert(item)
+        return
+      }
+
+      const { error } = await supabase.from('nesting_items').insert(item)
+      if (error) {
+        setItems((prev) => prev.filter((i) => i.id !== item.id))
+        console.error('Restore failed:', error.message)
+      }
+    },
+    [setItems]
   )
 
   const addItem = useCallback(
@@ -77,5 +100,5 @@ export function useUpdateItem(
     [setItems]
   )
 
-  return { updateItem, deleteItem, addItem }
+  return { updateItem, deleteItem, restoreItem, addItem }
 }

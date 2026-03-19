@@ -64,14 +64,16 @@ export const FOR_WHOM_LABELS: Record<ForWhom, string> = {
 
 export const ACQUISITION_LABELS: Record<AcquisitionType, string> = {
   buy_new: 'קנייה חדשה',
-  borrow: 'שאולה',
+  borrow: 'להשאיל',
   second_hand: 'יד שנייה',
+  gift: 'מתנה',
 }
 
 export const ACQUISITION_EMOJIS: Record<AcquisitionType, string> = {
   buy_new: '🛍️',
   borrow: '🤝',
   second_hand: '♻️',
+  gift: '🎁',
 }
 
 // Category sort_order block starts (100k per category)

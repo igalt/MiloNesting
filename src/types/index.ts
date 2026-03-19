@@ -1,4 +1,4 @@
-export type AcquisitionType = 'buy_new' | 'second_hand' | 'borrow'
+export type AcquisitionType = 'buy_new' | 'second_hand' | 'borrow' | 'gift'
 
 export type Priority = 'must_have' | 'nice_to_have' | 'question_mark'
 
@@ -27,11 +27,12 @@ export interface NestingItem {
   name_he: string
   name_en: string | null
   category: Category
-  acquisition_type: AcquisitionType
+  acquisition_types: AcquisitionType[]
   priority: Priority
   for_whom: ForWhom
   got_it: boolean
   borrow_from: string | null
+  gift_from: string | null
   store_links: StoreLink[]
   notes: string | null
   sort_order: number

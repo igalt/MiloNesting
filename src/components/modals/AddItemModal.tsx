@@ -32,9 +32,10 @@ export function AddItemModal({ onAdd, onClose, maxSortOrderByCategory }: AddItem
       category,
       priority,
       for_whom: forWhom,
-      acquisition_type: acquisition,
+      acquisition_types: [acquisition],
       got_it: false,
       borrow_from: null,
+      gift_from: null,
       store_links: [],
       notes: null,
       sort_order,
@@ -131,8 +132,9 @@ export function AddItemModal({ onAdd, onClose, maxSortOrderByCategory }: AddItem
               className="w-full px-3 py-2 rounded-xl border border-milo-stone-light bg-milo-cream text-sm focus:outline-none focus:ring-2 focus:ring-milo-lavender text-right"
             >
               <option value="buy_new">🛍️ קנייה חדשה</option>
-              <option value="borrow">🤝 שאולה</option>
+              <option value="borrow">🤝 להשאיל</option>
               <option value="second_hand">♻️ יד שנייה</option>
+              <option value="gift">🎁 מתנה</option>
             </select>
           </div>
 

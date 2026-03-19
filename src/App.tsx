@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { Plus } from 'lucide-react'
 import { useItems } from './hooks/useItems'
 import { useUpdateItem } from './hooks/useUpdateItem'
@@ -19,11 +19,13 @@ const DEFAULT_FILTERS: FilterState = {
 
 export default function App() {
   const { items, setItems, loading, error } = useItems()
-  const { updateItem, deleteItem, addItem } = useUpdateItem(items, setItems)
+  const { updateItem, deleteItem, restoreItem, addItem } = useUpdateItem(items, setItems)
 
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS)
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: null, direction: 'asc' })
   const [showAddModal, setShowAddModal] = useState(false)
+  const [lastDeleted, setLastDeleted] = useState<NestingItem | null>(null)
+  const undoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   function handleSortChange(col: keyof NestingItem) {
     setSortConfig((prev) => ({
@@ -35,6 +37,26 @@ export default function App() {
   function handleResetSort() {
     setSortConfig({ column: null, direction: 'asc' })
   }
+
+  const handleDelete = useCallback(
+    async (id: string) => {
+      const deleted = await deleteItem(id)
+      if (!deleted) return
+      setLastDeleted(deleted)
+      if (undoTimerRef.current) clearTimeout(undoTimerRef.current)
+      undoTimerRef.current = setTimeout(() => {
+        setLastDeleted(null)
+      }, 5000)
+    },
+    [deleteItem]
+  )
+
+  const handleUndo = useCallback(async () => {
+    if (!lastDeleted) return
+    if (undoTimerRef.current) clearTimeout(undoTimerRef.current)
+    setLastDeleted(null)
+    await restoreItem(lastDeleted)
+  }, [lastDeleted, restoreItem])
 
   const handleReorder = useCallback(
     async (activeId: string, overId: string) => {
@@ -122,7 +144,7 @@ export default function App() {
           sortConfig={sortConfig}
           onSortChange={handleSortChange}
           onUpdate={updateItem}
-          onDelete={deleteItem}
+          onDelete={handleDelete}
           onReorder={handleReorder}
         />
 
@@ -154,6 +176,21 @@ export default function App() {
           onClose={() => setShowAddModal(false)}
           maxSortOrderByCategory={maxSortOrderByCategory}
         />
+      )}
+
+      {/* Undo toast */}
+      {lastDeleted && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 animate-slide-down">
+          <div className="flex items-center gap-3 bg-milo-charcoal text-white px-4 py-3 rounded-2xl shadow-xl text-sm">
+            <span>🗑️ נמחק: {lastDeleted.name_he}</span>
+            <button
+              onClick={handleUndo}
+              className="font-bold text-milo-sunshine hover:text-yellow-300 transition-colors underline"
+            >
+              ביטול
+            </button>
+          </div>
+        </div>
       )}
     </div>
   )

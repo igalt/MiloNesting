@@ -17,6 +17,7 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
   const [nameHe, setNameHe] = useState(item.name_he)
   const [nameEn, setNameEn] = useState(item.name_en ?? '')
   const [borrowFrom, setBorrowFrom] = useState(item.borrow_from ?? '')
+  const [giftFrom, setGiftFrom] = useState(item.gift_from ?? '')
   const [notes, setNotes] = useState(item.notes ?? '')
   const [storeLinks, setStoreLinks] = useState<StoreLink[]>(item.store_links ?? [])
   const [newLinkLabel, setNewLinkLabel] = useState('')
@@ -26,8 +27,13 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
   useEffect(() => { setNameHe(item.name_he) }, [item.name_he])
   useEffect(() => { setNameEn(item.name_en ?? '') }, [item.name_en])
   useEffect(() => { setBorrowFrom(item.borrow_from ?? '') }, [item.borrow_from])
+  useEffect(() => { setGiftFrom(item.gift_from ?? '') }, [item.gift_from])
   useEffect(() => { setNotes(item.notes ?? '') }, [item.notes])
   useEffect(() => { setStoreLinks(item.store_links ?? []) }, [item.store_links])
+
+  const hasBorrow = item.acquisition_types.includes('borrow')
+  const hasGift = item.acquisition_types.includes('gift')
+  const hasBuyNew = item.acquisition_types.includes('buy_new')
 
   function handleNameHeBlur() {
     const trimmed = nameHe.trim()
@@ -41,6 +47,10 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
 
   function handleBorrowBlur() {
     onUpdate(item.id, { borrow_from: borrowFrom || null })
+  }
+
+  function handleGiftBlur() {
+    onUpdate(item.id, { gift_from: giftFrom || null })
   }
 
   function handleNotesBlur() {
@@ -60,9 +70,8 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
 
   function addStoreLink() {
     const label = newLinkLabel.trim()
-    const url = newLinkUrl.trim()
-    if (!label || !url) return
-    const updated = [...storeLinks, { label, url }]
+    if (!label) return
+    const updated = [...storeLinks, { label, url: newLinkUrl.trim() }]
     setStoreLinks(updated)
     onUpdate(item.id, { store_links: updated })
     setNewLinkLabel('')
@@ -91,7 +100,6 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
     <div className="animate-slide-down px-4 pb-4 bg-gradient-to-b from-white to-milo-cream/50 border-b border-milo-stone-light">
       {/* ── Name fields + Category ─────────────────────────── */}
       <div className="pt-3 grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 pb-4 border-b border-milo-stone-light/50">
-        {/* Hebrew name */}
         <div>
           <label className="text-xs text-milo-stone mb-1 block">שם בעברית</label>
           <input
@@ -103,7 +111,6 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
           />
         </div>
 
-        {/* English name */}
         <div>
           <label className="text-xs text-milo-stone mb-1 block">שם באנגלית (אופציונלי)</label>
           <input
@@ -117,7 +124,6 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
           />
         </div>
 
-        {/* Category */}
         <div>
           <label className="text-xs text-milo-stone mb-1 block">קטגוריה</label>
           <select
@@ -138,19 +144,19 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Left column */}
         <div className="space-y-3">
-          {/* Acquisition type */}
+          {/* Acquisition type — multi-select */}
           <div>
-            <label className="text-xs text-milo-stone mb-1 block">אופן השגה</label>
+            <label className="text-xs text-milo-stone mb-1 block">אופן השגה (בחירה מרובה)</label>
             <AcquisitionCell
-              value={item.acquisition_type}
-              onChange={(v: AcquisitionType) => onUpdate(item.id, { acquisition_type: v })}
+              value={item.acquisition_types}
+              onChange={(v: AcquisitionType[]) => onUpdate(item.id, { acquisition_types: v })}
             />
           </div>
 
-          {/* Borrow from (only when borrow) */}
-          {item.acquisition_type === 'borrow' && (
+          {/* Borrow from */}
+          {hasBorrow && (
             <div>
-              <label className="text-xs text-milo-stone mb-1 block">מאת (ממי שואלים)</label>
+              <label className="text-xs text-milo-stone mb-1 block">ממי שואלים</label>
               <input
                 type="text"
                 value={borrowFrom}
@@ -162,8 +168,23 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
             </div>
           )}
 
-          {/* Store links manager (only when buy_new) */}
-          {item.acquisition_type === 'buy_new' && (
+          {/* Gift from */}
+          {hasGift && (
+            <div>
+              <label className="text-xs text-milo-stone mb-1 block">ממי מתנה</label>
+              <input
+                type="text"
+                value={giftFrom}
+                onChange={(e) => setGiftFrom(e.target.value)}
+                onBlur={handleGiftBlur}
+                placeholder="שם הנותן..."
+                className="w-full px-3 py-1.5 rounded-lg border border-milo-coral bg-milo-blush/30 text-sm focus:outline-none focus:ring-2 focus:ring-milo-coral text-right"
+              />
+            </div>
+          )}
+
+          {/* Store links */}
+          {hasBuyNew && (
             <div>
               <label className="text-xs text-milo-stone mb-1 block">היכן לקנות</label>
               <div className="space-y-2">
@@ -182,19 +203,21 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
                       value={link.url}
                       onChange={(e) => updateStoreLink(i, 'url', e.target.value)}
                       onBlur={saveStoreLinkOnBlur}
-                      placeholder="https://..."
+                      placeholder="https://... (אופציונלי)"
                       className="flex-1 min-w-0 px-2 py-1 rounded-lg border border-milo-stone-light text-xs focus:outline-none focus:ring-1 focus:ring-milo-sky text-left"
                       dir="ltr"
                     />
-                    <a
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-1 text-sky-500 hover:text-sky-700 transition-colors shrink-0"
-                      title="פתח קישור"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
+                    {link.url && (
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-1 text-sky-500 hover:text-sky-700 transition-colors shrink-0"
+                        title="פתח קישור"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    )}
                     <button
                       onClick={() => removeStoreLink(i)}
                       className="p-1 text-red-400 hover:text-red-600 transition-colors shrink-0"
@@ -205,14 +228,13 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
                   </div>
                 ))}
 
-                {/* Add new link */}
                 {showAddLink ? (
                   <div className="space-y-1.5 p-2 rounded-lg bg-milo-sky/20 border border-milo-sky">
                     <input
                       type="text"
                       value={newLinkLabel}
                       onChange={(e) => setNewLinkLabel(e.target.value)}
-                      placeholder="שם החנות (למשל: ksp, ivory)"
+                      placeholder="שם החנות *"
                       autoFocus
                       className="w-full px-2 py-1 rounded border border-milo-stone-light text-xs focus:outline-none focus:ring-1 focus:ring-milo-sky text-right"
                     />
@@ -221,7 +243,7 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
                       value={newLinkUrl}
                       onChange={(e) => setNewLinkUrl(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && addStoreLink()}
-                      placeholder="https://..."
+                      placeholder="https://... (אופציונלי)"
                       className="w-full px-2 py-1 rounded border border-milo-stone-light text-xs focus:outline-none focus:ring-1 focus:ring-milo-sky text-left"
                       dir="ltr"
                     />
@@ -254,7 +276,7 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
           )}
 
           {/* Second hand placeholder */}
-          {item.acquisition_type === 'second_hand' && (
+          {item.acquisition_types.includes('second_hand') && (
             <div className="p-2 rounded-lg bg-milo-lavender/40 border border-milo-lavender text-xs text-purple-700">
               🔍 סריקת יד2 ופייסבוק מרקטפלייס — בקרוב!
             </div>
@@ -263,13 +285,11 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
 
         {/* Right column */}
         <div className="space-y-3">
-          {/* Priority selector */}
           <div>
             <label className="text-xs text-milo-stone mb-1 block">עדיפות (לחץ להחלפה)</label>
             <PriorityBadge priority={item.priority} onClick={cyclePriority} />
           </div>
 
-          {/* For whom */}
           <div>
             <label className="text-xs text-milo-stone mb-1 block">עבור (לחץ להחלפה)</label>
             <button
@@ -280,7 +300,6 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
             </button>
           </div>
 
-          {/* Notes */}
           <div>
             <label className="text-xs text-milo-stone mb-1 block">הערות</label>
             <textarea
@@ -298,9 +317,7 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
       {/* Delete */}
       <div className="mt-3 flex justify-end">
         <button
-          onClick={() => {
-            if (confirm(`למחוק את "${item.name_he}"?`)) onDelete(item.id)
-          }}
+          onClick={() => onDelete(item.id)}
           className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition-colors"
         >
           <Trash2 className="w-3 h-3" />

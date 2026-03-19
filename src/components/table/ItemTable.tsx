@@ -200,7 +200,12 @@ export function ItemTable({
               </div>
               <SortableContext items={catItems.map((i) => i.id)} strategy={verticalListSortingStrategy}>
                 <div className="space-y-1">
-                  {catItems.map((item) => (
+                  {[...catItems]
+                    .sort((a, b) =>
+                      PRIORITY_ORDER.indexOf(a.priority) - PRIORITY_ORDER.indexOf(b.priority) ||
+                      a.sort_order - b.sort_order
+                    )
+                    .map((item) => (
                     <ItemRow
                       key={item.id}
                       item={item}

@@ -31,7 +31,7 @@ export function ItemRow({ item, isDragDisabled, onUpdate, onDelete }: ItemRowPro
 
   function handleDelete(e: React.MouseEvent) {
     e.stopPropagation()
-    if (confirm(`למחוק את "${item.name_he}"?`)) onDelete(item.id)
+    onDelete(item.id)
   }
 
   return (
