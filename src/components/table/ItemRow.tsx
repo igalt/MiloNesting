@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { ChevronDown, ChevronUp, GripVertical, Trash2 } from 'lucide-react'
@@ -14,10 +13,12 @@ interface ItemRowProps {
   isDragDisabled: boolean
   onUpdate: (id: string, updates: Partial<NestingItem>) => void
   onDelete: (id: string) => void
+  expandedId: string | null
+  onExpandedChange: (id: string | null) => void
 }
 
-export function ItemRow({ item, isDragDisabled, onUpdate, onDelete }: ItemRowProps) {
-  const [expanded, setExpanded] = useState(false)
+export function ItemRow({ item, isDragDisabled, onUpdate, onDelete, expandedId, onExpandedChange }: ItemRowProps) {
+  const expanded = expandedId === item.id
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
@@ -32,6 +33,10 @@ export function ItemRow({ item, isDragDisabled, onUpdate, onDelete }: ItemRowPro
   function handleDelete(e: React.MouseEvent) {
     e.stopPropagation()
     onDelete(item.id)
+  }
+
+  function toggleExpanded() {
+    onExpandedChange(expanded ? null : item.id)
   }
 
   return (
@@ -71,7 +76,7 @@ export function ItemRow({ item, isDragDisabled, onUpdate, onDelete }: ItemRowPro
         {/* Name */}
         <div
           className="flex-1 min-w-0 cursor-pointer"
-          onClick={() => setExpanded((e) => !e)}
+          onClick={toggleExpanded}
         >
           <span className={`text-sm font-medium item-name ${item.got_it ? 'line-through text-milo-stone' : 'text-milo-charcoal'}`}>
             {item.name_he}
@@ -110,7 +115,7 @@ export function ItemRow({ item, isDragDisabled, onUpdate, onDelete }: ItemRowPro
 
         {/* Expand toggle */}
         <button
-          onClick={() => setExpanded((e) => !e)}
+          onClick={toggleExpanded}
           className="flex-shrink-0 text-milo-stone hover:text-milo-charcoal transition-colors"
           aria-label={expanded ? 'סגור' : 'פתח פרטים'}
         >

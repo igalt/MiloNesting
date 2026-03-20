@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   DndContext,
   closestCenter,
@@ -81,6 +82,8 @@ export function ItemTable({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   )
 
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+
   const isDragDisabled = sortConfig.column !== null
 
   const filtered = applyFilters(items, filters)
@@ -160,6 +163,8 @@ export function ItemTable({
                 isDragDisabled={isDragDisabled}
                 onUpdate={onUpdate}
                 onDelete={onDelete}
+                expandedId={expandedId}
+                onExpandedChange={setExpandedId}
               />
             ))}
           </div>
@@ -200,18 +205,21 @@ export function ItemTable({
               </div>
               <SortableContext items={catItems.map((i) => i.id)} strategy={verticalListSortingStrategy}>
                 <div className="space-y-1">
-                  {[...catItems]
-                    .sort((a, b) =>
-                      PRIORITY_ORDER.indexOf(a.priority) - PRIORITY_ORDER.indexOf(b.priority) ||
-                      a.sort_order - b.sort_order
-                    )
-                    .map((item) => (
+                  {(expandedId && catItems.some((i) => i.id === expandedId)
+                    ? catItems
+                    : [...catItems].sort((a, b) =>
+                        PRIORITY_ORDER.indexOf(a.priority) - PRIORITY_ORDER.indexOf(b.priority) ||
+                        a.sort_order - b.sort_order
+                      )
+                  ).map((item) => (
                     <ItemRow
                       key={item.id}
                       item={item}
                       isDragDisabled={isDragDisabled}
                       onUpdate={onUpdate}
                       onDelete={onDelete}
+                      expandedId={expandedId}
+                      onExpandedChange={setExpandedId}
                     />
                   ))}
                 </div>

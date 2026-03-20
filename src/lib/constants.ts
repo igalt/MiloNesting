@@ -45,7 +45,7 @@ export const CATEGORY_ORDER: Category[] = [
 export const PRIORITY_LABELS: Record<Priority, string> = {
   must_have: 'חובה',
   nice_to_have: 'נחמד שיהיה',
-  question_mark: 'שאלתי',
+  question_mark: 'לא בטוח',
 }
 
 export const PRIORITY_EMOJIS: Record<Priority, string> = {

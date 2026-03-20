@@ -106,7 +106,7 @@ export function AddItemModal({ onAdd, onClose, maxSortOrderByCategory }: AddItem
               >
                 <option value="must_have">💗 חובה</option>
                 <option value="nice_to_have">⭐ נחמד שיהיה</option>
-                <option value="question_mark">❓ שאלתי</option>
+                <option value="question_mark">❓ לא בטוח</option>
               </select>
             </div>
             <div>
