@@ -300,7 +300,7 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
               {/* Search buttons */}
               <div className="flex gap-2 flex-wrap">
                 <a
-                  href={`https://www.yad2.co.il/s/baby?q=${encodeURIComponent(item.name_he)}`}
+                  href={`https://www.yad2.co.il/market/search?q=${encodeURIComponent(item.name_he)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-milo-lavender/50 border border-purple-300 text-xs text-purple-700 hover:bg-milo-lavender transition-colors"
@@ -309,7 +309,7 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
                 </a>
                 {item.name_en && (
                   <a
-                    href={`https://www.yad2.co.il/s/baby?q=${encodeURIComponent(item.name_en)}`}
+                    href={`https://www.yad2.co.il/market/search?q=${encodeURIComponent(item.name_en)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-milo-lavender/50 border border-purple-300 text-xs text-purple-700 hover:bg-milo-lavender transition-colors"
@@ -347,13 +347,18 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
                     {listings.map((l) => (
                       <div
                         key={l.id}
-                        className={`flex items-center gap-2 px-3 py-2 text-xs transition-colors ${!l.is_read ? 'bg-milo-blush/30' : ''}`}
+                        className={`flex items-center gap-2 px-3 py-2 text-xs transition-colors cursor-pointer ${!l.is_read ? 'bg-milo-blush/30' : ''}`}
                         onClick={() => !l.is_read && markRead(l.id)}
                       >
-                        <span className="font-semibold text-milo-coral-dark shrink-0 w-16 text-left" dir="ltr">
-                          {l.price ?? 'ללא מחיר'}
+                        <span className="font-semibold text-milo-coral-dark shrink-0 w-14 text-left" dir="ltr">
+                          {l.price ?? '—'}
                         </span>
-                        <span className="flex-1 text-milo-charcoal truncate text-right">{l.title}</span>
+                        {l.city && (
+                          <span className="text-milo-stone shrink-0 text-[10px]">
+                            {l.city}{l.distance_km != null ? ` ~${l.distance_km}km` : ''}
+                          </span>
+                        )}
+                        <span className="flex-1 text-milo-charcoal truncate text-right min-w-0">{l.title}</span>
                         {l.url && (
                           <a
                             href={l.url}

@@ -48,6 +48,8 @@ export interface Yad2Listing {
   title: string
   price: string | null
   url: string | null
+  city: string | null
+  distance_km: number | null
   search_term: string
   found_at: string
   is_read: boolean
