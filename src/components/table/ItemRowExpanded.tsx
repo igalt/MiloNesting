@@ -228,6 +228,16 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
                   </div>
                 ))}
 
+                {/* Quick search */}
+                <a
+                  href={`https://www.zap.co.il/search.aspx?keyword=${encodeURIComponent(item.name_he)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-orange-500 hover:text-orange-700 transition-colors"
+                >
+                  🔍 חפש בזאפ
+                </a>
+
                 {showAddLink ? (
                   <div className="space-y-1.5 p-2 rounded-lg bg-milo-sky/20 border border-milo-sky">
                     <input
@@ -275,10 +285,38 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
             </div>
           )}
 
-          {/* Second hand placeholder */}
+          {/* Second hand search */}
           {item.acquisition_types.includes('second_hand') && (
-            <div className="p-2 rounded-lg bg-milo-lavender/40 border border-milo-lavender text-xs text-purple-700">
-              🔍 סריקת יד2 ופייסבוק מרקטפלייס — בקרוב!
+            <div className="space-y-1.5">
+              <label className="text-xs text-milo-stone block">חיפוש יד שנייה</label>
+              <div className="flex gap-2 flex-wrap">
+                <a
+                  href={`https://www.yad2.co.il/s/baby?q=${encodeURIComponent(item.name_he)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-milo-lavender/50 border border-purple-300 text-xs text-purple-700 hover:bg-milo-lavender transition-colors"
+                >
+                  🔍 יד2
+                </a>
+                {item.name_en && (
+                  <a
+                    href={`https://www.yad2.co.il/s/baby?q=${encodeURIComponent(item.name_en)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-milo-lavender/50 border border-purple-300 text-xs text-purple-700 hover:bg-milo-lavender transition-colors"
+                  >
+                    🔍 יד2 (EN)
+                  </a>
+                )}
+                <a
+                  href={`https://www.facebook.com/marketplace/search/?query=${encodeURIComponent(item.name_he)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-300 text-xs text-blue-700 hover:bg-blue-100 transition-colors"
+                >
+                  🔍 מרקטפלייס
+                </a>
+              </div>
             </div>
           )}
         </div>
