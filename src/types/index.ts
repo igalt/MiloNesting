@@ -42,6 +42,17 @@ export interface NestingItem {
 
 export type NewNestingItem = Omit<NestingItem, 'id' | 'created_at' | 'updated_at'>
 
+export interface Yad2Listing {
+  id: string
+  item_id: string
+  title: string
+  price: string | null
+  url: string | null
+  search_term: string
+  found_at: string
+  is_read: boolean
+}
+
 export interface SortConfig {
   column: keyof NestingItem | null
   direction: 'asc' | 'desc'

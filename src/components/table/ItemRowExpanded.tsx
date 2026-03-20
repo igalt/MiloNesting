@@ -4,6 +4,7 @@ import { FOR_WHOM_LABELS, CATEGORY_LABELS, CATEGORY_EMOJIS, CATEGORY_ORDER } fro
 import type { NestingItem, AcquisitionType, Priority, ForWhom, Category, StoreLink } from '../../types'
 import { AcquisitionCell } from '../cells/AcquisitionCell'
 import { PriorityBadge } from '../cells/PriorityBadge'
+import { useYad2Listings } from '../../hooks/useYad2Listings'
 
 interface ItemRowExpandedProps {
   item: NestingItem
@@ -14,6 +15,11 @@ interface ItemRowExpandedProps {
 const PRIORITY_ORDER: Priority[] = ['must_have', 'nice_to_have', 'question_mark']
 
 export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedProps) {
+  const hasSecondHand = item.acquisition_types.includes('second_hand')
+  const { listings, loading: listingsLoading, unreadCount, markRead } = useYad2Listings(
+    hasSecondHand ? item.id : ''
+  )
+
   const [nameHe, setNameHe] = useState(item.name_he)
   const [nameEn, setNameEn] = useState(item.name_en ?? '')
   const [borrowFrom, setBorrowFrom] = useState(item.borrow_from ?? '')
@@ -34,6 +40,7 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
   const hasBorrow = item.acquisition_types.includes('borrow')
   const hasGift = item.acquisition_types.includes('gift')
   const hasBuyNew = item.acquisition_types.includes('buy_new')
+  // hasSecondHand defined above (needed for hook)
 
   function handleNameHeBlur() {
     const trimmed = nameHe.trim()
@@ -285,10 +292,12 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
             </div>
           )}
 
-          {/* Second hand search */}
-          {item.acquisition_types.includes('second_hand') && (
-            <div className="space-y-1.5">
+          {/* Second hand search + listings */}
+          {hasSecondHand && (
+            <div className="space-y-2">
               <label className="text-xs text-milo-stone block">חיפוש יד שנייה</label>
+
+              {/* Search buttons */}
               <div className="flex gap-2 flex-wrap">
                 <a
                   href={`https://www.yad2.co.il/s/baby?q=${encodeURIComponent(item.name_he)}`}
@@ -317,6 +326,54 @@ export function ItemRowExpanded({ item, onUpdate, onDelete }: ItemRowExpandedPro
                   🔍 מרקטפלייס
                 </a>
               </div>
+
+              {/* Listings from scanner */}
+              {!listingsLoading && listings.length > 0 && (
+                <div className="rounded-xl border border-purple-200 bg-milo-lavender/20 overflow-hidden">
+                  <div className="flex items-center justify-between px-3 py-1.5 border-b border-purple-200 bg-milo-lavender/30">
+                    <span className="text-xs font-medium text-purple-700">
+                      ממצאים אחרונים
+                      {unreadCount > 0 && (
+                        <span className="mr-1.5 bg-milo-coral text-white rounded-full px-1.5 py-0.5 text-[10px] font-bold">
+                          {unreadCount} חדש
+                        </span>
+                      )}
+                    </span>
+                    <span className="text-[10px] text-milo-stone">
+                      עודכן: {new Date(listings[0].found_at).toLocaleString('he-IL', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                  <div className="divide-y divide-purple-100">
+                    {listings.map((l) => (
+                      <div
+                        key={l.id}
+                        className={`flex items-center gap-2 px-3 py-2 text-xs transition-colors ${!l.is_read ? 'bg-milo-blush/30' : ''}`}
+                        onClick={() => !l.is_read && markRead(l.id)}
+                      >
+                        <span className="font-semibold text-milo-coral-dark shrink-0 w-16 text-left" dir="ltr">
+                          {l.price ?? 'ללא מחיר'}
+                        </span>
+                        <span className="flex-1 text-milo-charcoal truncate text-right">{l.title}</span>
+                        {l.url && (
+                          <a
+                            href={l.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="shrink-0 text-purple-500 hover:text-purple-700"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {!listingsLoading && listings.length === 0 && (
+                <p className="text-[11px] text-milo-stone">הסוכן עוד לא סרק — ירוץ פעמיים ביום 🤖</p>
+              )}
             </div>
           )}
         </div>
