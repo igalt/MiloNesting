@@ -25,6 +25,8 @@ function save(items: NestingItem[]): void {
 
 export function localGetAll(): NestingItem[] {
   let items = load()
+  // Migrate: add found_it if missing from older data
+  items = items.map((i) => (i.found_it !== undefined ? i : { ...i, found_it: false }))
   if (items.length === 0) {
     // First run — seed from the built-in list
     const ts = now()

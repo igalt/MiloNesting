@@ -34,6 +34,7 @@ export function AddItemModal({ onAdd, onClose, maxSortOrderByCategory }: AddItem
       for_whom: forWhom,
       acquisition_types: [acquisition],
       got_it: false,
+      found_it: false,
       borrow_from: null,
       gift_from: null,
       store_links: [],

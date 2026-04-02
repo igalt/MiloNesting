@@ -39,7 +39,7 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
     onChange({ ...filters, forWhom: fw })
   }
 
-  function setGotIt(v: 'all' | 'got' | 'pending') {
+  function setGotIt(v: 'all' | 'got' | 'found' | 'pending') {
     onChange({ ...filters, gotIt: v })
   }
 
@@ -78,7 +78,7 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
             }`}
           >
             <span>{filters.gotIt === 'pending' ? '✓' : '👁'}</span>
-            <span className="hidden sm:inline">{filters.gotIt === 'pending' ? 'מציג חסרים' : 'הסתר שהושג'}</span>
+            <span className="hidden sm:inline">{filters.gotIt === 'pending' ? 'מציג חסרים בלבד' : 'הסתר שהושג'}</span>
           </button>
         </div>
 
@@ -152,19 +152,28 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
           <div className="w-px h-5 bg-milo-stone-light mx-1" />
 
           {/* Got it */}
-          {(['all', 'pending', 'got'] as const).map((g) => {
+          {(['all', 'pending', 'found', 'got'] as const).map((g) => {
             const active = filters.gotIt === g
+            const label =
+              g === 'all' ? 'הכל' :
+              g === 'got' ? '✓ יש לנו' :
+              g === 'found' ? '— מצאנו' :
+              '⏳ חסר'
+            const activeClass =
+              g === 'found'
+                ? 'bg-milo-sunshine border-amber-300 text-amber-700 active'
+                : 'bg-milo-mint border-milo-mint text-milo-charcoal active'
             return (
               <button
                 key={g}
                 onClick={() => setGotIt(g)}
                 className={`filter-chip text-xs ${
                   active
-                    ? 'bg-milo-mint border-milo-mint text-milo-charcoal active'
+                    ? activeClass
                     : 'bg-white border-milo-stone-light text-milo-stone hover:border-milo-mint'
                 }`}
               >
-                {g === 'all' ? '✓ הכל' : g === 'got' ? '✓ יש לנו' : '⏳ חסר'}
+                {label}
               </button>
             )
           })}

@@ -48,6 +48,8 @@ export function ItemRow({ item, isDragDisabled, onUpdate, onDelete, expandedId, 
           ? 'shadow-xl border-milo-lavender bg-milo-lavender/10 z-50'
           : item.got_it
           ? 'border-milo-mint bg-milo-mint/10 got-it-row'
+          : item.found_it
+          ? 'border-amber-200 bg-milo-sunshine/20'
           : 'border-milo-stone-light bg-white hover:border-milo-lavender hover:shadow-sm'
       }`}
     >
@@ -68,8 +70,9 @@ export function ItemRow({ item, isDragDisabled, onUpdate, onDelete, expandedId, 
         {/* Got it */}
         <div className="flex-shrink-0" onClick={(e) => e.stopPropagation()}>
           <GotItCheckbox
-            checked={item.got_it}
-            onChange={(v) => onUpdate(item.id, { got_it: v })}
+            gotIt={item.got_it}
+            foundIt={item.found_it}
+            onChange={(gotIt, foundIt) => onUpdate(item.id, { got_it: gotIt, found_it: foundIt })}
           />
         </div>
 

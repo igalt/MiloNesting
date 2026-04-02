@@ -31,6 +31,7 @@ export interface NestingItem {
   priority: Priority
   for_whom: ForWhom
   got_it: boolean
+  found_it: boolean
   borrow_from: string | null
   gift_from: string | null
   store_links: StoreLink[]
@@ -64,6 +65,6 @@ export interface FilterState {
   categories: Category[]
   priorities: Priority[]
   forWhom: ForWhom | 'all'
-  gotIt: 'all' | 'got' | 'pending'
+  gotIt: 'all' | 'got' | 'found' | 'pending'
   searchText: string
 }

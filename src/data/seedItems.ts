@@ -16,6 +16,7 @@ function item(
     priority: 'must_have',
     for_whom: 'baby',
     got_it: false,
+    found_it: false,
     borrow_from: null,
     gift_from: null,
     store_links: [],

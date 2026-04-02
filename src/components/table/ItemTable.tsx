@@ -34,7 +34,8 @@ function applyFilters(items: NestingItem[], filters: FilterState): NestingItem[]
     if (filters.priorities.length > 0 && !filters.priorities.includes(item.priority)) return false
     if (filters.forWhom !== 'all' && item.for_whom !== filters.forWhom) return false
     if (filters.gotIt === 'got' && !item.got_it) return false
-    if (filters.gotIt === 'pending' && item.got_it) return false
+    if (filters.gotIt === 'found' && !item.found_it) return false
+    if (filters.gotIt === 'pending' && (item.got_it || item.found_it)) return false
     if (filters.searchText) {
       const q = filters.searchText.toLowerCase()
       const matchHe = item.name_he.toLowerCase().includes(q)
