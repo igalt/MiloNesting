@@ -1,25 +1,42 @@
+import { useId } from 'react'
 import { Check } from 'lucide-react'
 import confetti from 'canvas-confetti'
 
 function HalfCheckIcon({ className }: { className?: string }) {
+  const id = useId()
   return (
-    <svg
-      viewBox="0 0 24 24"
-      className={className}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {/* Right half filled */}
+    <svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id={`lh-${id}`}>
+          <rect x="0" y="0" width="12" height="24" />
+        </clipPath>
+        <clipPath id={`rh-${id}`}>
+          <rect x="12" y="0" width="12" height="24" />
+        </clipPath>
+      </defs>
+      {/* Left half: white fill */}
+      <path d="M12 2 A10 10 0 1 0 12 22 Z" fill="white" />
+      {/* Right half: green fill */}
       <path d="M12 2 A10 10 0 0 1 12 22 Z" fill="currentColor" />
-      {/* Full circle border */}
+      {/* Circle border on top */}
       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-      {/* Checkmark */}
+      {/* Checkmark: green on white half */}
+      <path
+        d="M7 12.5 L10.5 16 L17 9"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        clipPath={`url(#lh-${id})`}
+      />
+      {/* Checkmark: white on green half */}
       <path
         d="M7 12.5 L10.5 16 L17 9"
         stroke="white"
         strokeWidth="2.2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        clipPath={`url(#rh-${id})`}
       />
     </svg>
   )
