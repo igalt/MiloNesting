@@ -157,7 +157,7 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
             const label =
               g === 'all' ? 'הכל' :
               g === 'got' ? '✓ יש לנו' :
-              g === 'found' ? '— מצאנו' :
+              g === 'found' ? '◑ מצאנו' :
               '⏳ חסר'
             const activeClass =
               g === 'found'

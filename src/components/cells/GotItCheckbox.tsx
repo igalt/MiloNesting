@@ -1,7 +1,30 @@
-import { Check, Minus } from 'lucide-react'
+import { Check } from 'lucide-react'
 import confetti from 'canvas-confetti'
 
-// 3 states: unchecked → found (half) → got it (full)
+function HalfCheckIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Right half filled */}
+      <path d="M12 2 A10 10 0 0 1 12 22 Z" fill="currentColor" />
+      {/* Full circle border */}
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+      {/* Checkmark */}
+      <path
+        d="M7 12.5 L10.5 16 L17 9"
+        stroke="white"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 interface GotItCheckboxProps {
   gotIt: boolean
   foundIt: boolean
@@ -11,10 +34,8 @@ interface GotItCheckboxProps {
 export function GotItCheckbox({ gotIt, foundIt, onChange }: GotItCheckboxProps) {
   function handleClick() {
     if (!foundIt && !gotIt) {
-      // unchecked → found
       onChange(false, true)
     } else if (foundIt && !gotIt) {
-      // found → got it
       onChange(true, true)
       confetti({
         particleCount: 60,
@@ -23,7 +44,6 @@ export function GotItCheckbox({ gotIt, foundIt, onChange }: GotItCheckboxProps) 
         colors: ['#FF8FA3', '#C7F2E4', '#E2D4F0', '#FFF3B0', '#C8E6FA'],
       })
     } else {
-      // got it → unchecked
       onChange(false, false)
     }
   }
@@ -44,10 +64,10 @@ export function GotItCheckbox({ gotIt, foundIt, onChange }: GotItCheckboxProps) 
     return (
       <button
         onClick={handleClick}
-        className="w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all duration-200 bg-milo-sunshine border-amber-300 text-amber-700"
+        className="w-7 h-7 flex items-center justify-center transition-all duration-200 text-milo-sage hover:opacity-80"
         aria-label="סמן כהושג"
       >
-        <Minus className="w-4 h-4" strokeWidth={3} />
+        <HalfCheckIcon className="w-7 h-7" />
       </button>
     )
   }

@@ -19,6 +19,7 @@ CREATE TABLE nesting_items (
   for_whom         TEXT NOT NULL DEFAULT 'baby'
                      CHECK (for_whom IN ('baby','mother','both')),
   got_it           BOOLEAN NOT NULL DEFAULT FALSE,
+  found_it         BOOLEAN NOT NULL DEFAULT FALSE,
   borrow_from      TEXT,
   store_links      JSONB NOT NULL DEFAULT '[]',
   notes            TEXT,

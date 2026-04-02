@@ -49,7 +49,7 @@ export function ItemRow({ item, isDragDisabled, onUpdate, onDelete, expandedId, 
           : item.got_it
           ? 'border-milo-mint bg-milo-mint/10 got-it-row'
           : item.found_it
-          ? 'border-amber-200 bg-milo-sunshine/20'
+          ? 'border-milo-mint bg-milo-mint/5'
           : 'border-milo-stone-light bg-white hover:border-milo-lavender hover:shadow-sm'
       }`}
     >
