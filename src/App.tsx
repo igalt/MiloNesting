@@ -98,7 +98,7 @@ export default function App() {
     if (item.sort_order > cur) maxSortOrderByCategory[item.category] = item.sort_order
   }
 
-  const gotItCount = items.filter((i) => i.got_it).length
+  const gotItCount = items.filter((i) => i.got_it || i.found_it).length
 
   if (loading) {
     return (

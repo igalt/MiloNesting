@@ -211,7 +211,7 @@ export function ItemTable({
                   {CATEGORY_LABELS[cat]}
                 </h3>
                 <span className="text-xs text-milo-stone">
-                  ({catItems.filter((i) => i.got_it).length}/{catItems.length})
+                  ({catItems.filter((i) => i.got_it || i.found_it).length}/{catItems.length})
                 </span>
               </div>
               <SortableContext items={catItems.map((i) => i.id)} strategy={verticalListSortingStrategy}>
