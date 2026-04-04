@@ -38,9 +38,19 @@ function applyFilters(items: NestingItem[], filters: FilterState): NestingItem[]
     if (filters.gotIt === 'pending' && (item.got_it || item.found_it)) return false
     if (filters.searchText) {
       const q = filters.searchText.toLowerCase()
-      const matchHe = item.name_he.toLowerCase().includes(q)
-      const matchEn = item.name_en?.toLowerCase().includes(q)
-      if (!matchHe && !matchEn) return false
+      const searchFields = [
+        item.name_he,
+        item.name_en,
+        item.notes,
+        item.borrow_from,
+        item.category,
+        item.acquisition_type,
+        item.priority,
+        item.for_whom,
+        ...(item.store_links ?? []).flatMap((l) => [l.label, l.url]),
+      ]
+      const matches = searchFields.some((f) => f?.toLowerCase().includes(q))
+      if (!matches) return false
     }
     return true
   })
