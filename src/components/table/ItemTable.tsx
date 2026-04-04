@@ -44,7 +44,7 @@ function applyFilters(items: NestingItem[], filters: FilterState): NestingItem[]
         item.notes,
         item.borrow_from,
         item.category,
-        item.acquisition_type,
+        ...(item.acquisition_types ?? []),
         item.priority,
         item.for_whom,
         ...(item.store_links ?? []).flatMap((l) => [l.label, l.url]),
